@@ -1,15 +1,12 @@
 import os
 import json
 from google.cloud import vision
-from google.oauth2 import service_account
 
 credentials = os.getenv("VISION_API_CREDENTIALS", "")
 print("hi")
 print(credentials)
 info = json.loads(credentials)
-client = vision.ImageAnnotatorClient(
-    credentials=service_account.Credentials.from_service_account_info(info)
-)
+client = vision.ImageAnnotatorClient.from_service_account_info(info)
 
 
 class FoodException(Exception):
@@ -17,16 +14,22 @@ class FoodException(Exception):
         super().__init__(message)
 
 
-def food(data: bytes) -> tuple:
+def food(data: bytes = None, url: str = None) -> tuple:
     """Detects if an image contains food.
 
     Returns a tuple with the first item a boolean (whether it has food)
     and the second item a dict mapping detected labels to scores.
 
-    Based on the example remote label classification on Google Cloud Docs.
+    Based on the example label classification code on Google Cloud Docs.
     """
 
-    image = vision.Image(content=data)
+    image = vision.Image()
+    if data is not None:
+        image = vision.Image(content=data)
+    elif url is not None:
+        image.source.image_uri = url
+    else:
+        raise FoodException("Either data or url need to be provided!")
 
     response = client.label_detection(image=image, max_results=10)
     labels = {

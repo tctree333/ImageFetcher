@@ -41,7 +41,15 @@ async def on_message(og_msg: discord.Message):
                 )
 
                 try:
-                    is_food, labels = food.food(attachment_data)
+                    is_food, labels = food.food(
+                        data=(
+                            # only use local data if less than 10 MB
+                            attachment_data
+                            if len(attachment_data) > 10000000
+                            else None
+                        ),
+                        url=item.url,
+                    )
                     labels = (
                         "{} ({:.1%})".format(label, score)
                         for label, score in labels.items()

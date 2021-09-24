@@ -25,7 +25,7 @@ async def on_ready():
 
 @client.event
 async def on_message(og_msg: discord.Message):
-    if og_msg.channel.id == DISCUSSION_CHANNEL_ID and len(og_msg.attachments) > 0:
+    if og_msg.channel.id == DISCUSSION_CHANNEL_ID and og_msg.attachments:
         for item in og_msg.attachments:
             attachment_data = await item.read()
             if imghdr.what(None, h=attachment_data) in (

@@ -3,8 +3,6 @@ import json
 from google.cloud import vision
 
 credentials = os.getenv("VISION_API_CREDENTIALS", "")
-print("hi")
-print(credentials)
 info = json.loads(credentials)
 client = vision.ImageAnnotatorClient.from_service_account_info(info)
 

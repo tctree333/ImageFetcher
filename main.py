@@ -10,7 +10,9 @@ import food
 DISCUSSION_CHANNEL_ID = 715753002392223785  # general channel for people to post to
 IMAGE_CHANNEL_ID = 722221344447791254  # bot managed channel
 
-client = discord.Client()
+intents = discord.Intents.default()
+intents.message_content = True
+client = discord.Client(intents=intents)
 error_messages = {}
 
 
@@ -50,7 +52,7 @@ async def on_message(og_msg: discord.Message):
                         ),
                         url=item.url,
                     )
-                    labels = (
+                    labels = tuple(
                         "{} ({:.1%})".format(label, score)
                         for label, score in labels.items()
                     )
